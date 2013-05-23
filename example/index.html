@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title></title>
+<link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+<div class="slideshow">
+	<div class="slideshow-control">
+		<ul class="arrows clearfix">
+			<li data-move="-1" class="arrow arrow-left"><a href="#">-1</a></li>
+			<li data-move="1" class="arrow arrow-right"><a href="#">1</a></li>
+		</ul>
+		<ul class="buttons">
+			<li class="pagination"><a href="#">0</a></li>
+			<li class="pagination"><a href="#">1</a></li>
+			<li class="pagination"><a href="#">2</a></li>
+			<li class="pagination"><a href="#">3</a></li>
+		</ul>
+	</div>
+	<div class="slideshow-container">
+		<div class="slides">
+			<img src="img/1.png" />
+			<img src="img/2.png" />
+			<img src="img/3.png" />
+			<img src="img/4.png" />
+		</div>
+	</div>
+</div>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="jquery.slideshow.js"></script>
+
+<script>
+
+$('.slideshow').slideshow( { height: 'auto' } );
+
+</script>
+
+</body>
+</html>
