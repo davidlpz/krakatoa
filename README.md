@@ -1,1 +1,2 @@
-jQuery Slideshow plugin for images
+A jQuery slideshow plugin
+=========================
