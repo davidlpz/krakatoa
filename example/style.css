@@ -87,12 +87,12 @@ strong{
 
 
 
-.slideshow{
+.slider{
 	width:400px;
 	margin:50px auto;
 	position:relative;
 }
-.slideshow-control{
+.slider-control{
 	padding-bottom:20px;
 }
 .arrows{
@@ -103,10 +103,11 @@ strong{
 }
 .arrow{
 	float:left;
+	margin-right:7px;
 }
 .arrow a{
 	display:block;
- 	width:16px;
+ 	width:13px;
 	height:0;
 	padding-top:16px;
 	overflow:hidden;
@@ -117,14 +118,14 @@ strong{
 	background-position:0 0;
 }
 .arrow-right a{
-	background-position:-16px 0;
+	background-position:-20px 0;
 	left:20px;
 }
 .arrow-left a:hover{
 	background-position:0 -16px;
 }
 .arrow-right a:hover{
-	background-position:-16px -16px;
+	background-position:-20px -16px;
 	left:20px;
 }
 .buttons{
