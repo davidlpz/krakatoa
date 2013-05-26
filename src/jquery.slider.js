@@ -2,8 +2,8 @@
 
 	// Default settings
 	var settings = {
-		width			: '400',
-		height			: '300',
+		width			: '400px',
+		height			: '300px',
 		loop			: true,
 		show_arrows		: true,
 		show_buttons	: true,
@@ -50,8 +50,8 @@
 			self.find('.slides').find('img').eq(settings.default_image).addClass('active-slide');
 
 			// Set the slider width
-			width = settings.width === 'auto' ? $('.slider').width() : settings.width;
-			$('.slider').css('width', width + 'px');
+			width = settings.width === 'auto' ? $('.slider')[0].style.width : settings.width;
+			$('.slider').css('width', width);
 
 			// Set the slider height
 			height = settings.height === 'auto' ? $('.active-slide').height() : settings.height;

@@ -164,6 +164,7 @@ strong{
 	top:0;
 	left:0;
 	width:100%;
+	height:auto;
 	display:none;
 }
 .slides img.active-slide,
