@@ -44,8 +44,8 @@ Load the script.
 
 Options are set with an object as second argument to the .slider() method. They are all optional. Some options that you can specify:
 
-* **width**: width of the slider. Can be set to 'auto' or a integer. The default value is 400.
-* **height**: height of the slider. Can be set to 'auto' (it will be the height of the actual image) or a integer. The default value is 300.
+* **width**: width of the slider. Can be set to 'auto' (it will be the container's width) or a string. The default value is 400px.
+* **height**: height of the slider. Can be set to 'auto' (it will be the height of the actual image) or a string. The default value is 300px.
 * **loop**: begins again after last image. Boolean. Default value is true.
 * **show_arrows**: Show the arrows control. Boolean. Default value is true.
 * **show_buttons**: Show the pagination buttons. Boolean. Default value is true.

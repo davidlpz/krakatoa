@@ -15,13 +15,14 @@
 		if (options) { $.extend(settings, options); }
 
 		return this.each(function() {
-			var arrows, buttons,
-				height, length,
+			var arrows, buttons, length,
+				width, height, ratio,
 				self = $(this),
-				i = 0;
+				i = 0,
+				active_slide = self.find('.slides').find('img').eq(settings.default_image);
 
 			// Check if the plugin has not already been attached to the element
-            if (self.data('slider')) return;
+			if (self.data('slider')) return;
 
 			// Add arrows and handler
 			if (settings.show_arrows) {
@@ -30,7 +31,7 @@
 								'<li data-move="1" class="arrow arrow-right"><a href="#">1</a></li>' +
 							'</ul>';
 				self.find('.slider-control').append(arrows);
-				self.find('.arrow').on('click', $.fn.slider.move_slider);
+				self.find('.arrows').on('click', 'li', $.fn.slider.move_slider);
 			}
 
 			// Add buttons and handler
@@ -42,23 +43,31 @@
 				}
 				buttons += '</ul>';
 				self.find('.slider-control').append(buttons);
-				self.find('.pagination').on('click', $.fn.slider.move_slider);
+				self.find('.buttons').on('click', 'li', $.fn.slider.move_slider);
 			}
-					
-			// Display first image at the beginning
-			self.find('.buttons').find('li').eq(settings.default_image).addClass('active-button');
-			self.find('.slides').find('img').eq(settings.default_image).addClass('active-slide');
 
-			// Set the slider width
-			width = settings.width === 'auto' ? $('.slider')[0].style.width : settings.width;
-			$('.slider').css('width', width);
+			active_slide.one('load',function() {
+				// Set the slider width
+				width = settings.width === 'auto' ? self.find('.slider').width() : settings.width;
+				self.find('.slider').css('width', width);
 
-			// Set the slider height
-			height = settings.height === 'auto' ? $('.active-slide').height() : settings.height;
-			$('.slides').css('height', height + 'px');
-			
-			// Plugin has been attached to the element
-			self.data('slider', true);
+				// Set the slider height
+				height = settings.height === 'auto' ? $(this).height() + 'px' : settings.height;
+				self.find('.slides').css('height', height);
+
+				// Display first image at the beginning
+				self.find('.buttons').find('li').eq(settings.default_image).addClass('active-button');
+				$(this).addClass('active-slide');
+				
+				// Plugin has been attached to the element
+				self.data('slider', true);
+
+			}).each(function() {
+				if (this.complete ||
+					this.readyState == "complete" ||
+					this.readyState == 4)
+				$(this).trigger('load');
+			});
 		});
 	}
 
@@ -69,7 +78,7 @@
 			active_slide = parent.find('.active-slide'),
 			active_button = parent.find('.active-button'),
 			length = active_button.parent().children().length,
-			i, move, height;
+			i, move, next_slide, height;
 
 		// Check if it's an arrow or a button that's been clicked
 		if (self.attr('data-move') && settings.show_arrows) {
@@ -86,30 +95,37 @@
 		}
 
 		// Remove event and prevent mouse default event
-		self.off('click')
-				.on('click',function(e){ e.preventDefault(); });
+		self.parent().off('click','li');
+		self.parent().on('click','li',function(e){ e.preventDefault(); });
 
-		// Hide old image
-		active_slide.removeClass('active-slide')
-					.addClass('moved-slide')
-					.animate({ left: - (100 * move) + '%' },'linear',function(){
-						active_slide.removeClass('moved-slide')
-									.css('left', 0);
-					});
+		next_slide = active_slide.closest('.slides').find('img').eq(i);
+		next_slide.one('load',function() {
+			// Hide old image
+			active_slide.removeClass('active-slide')
+						.addClass('moved-slide')
+						.animate({ left: - (100 * move) + '%' },'linear',function(){
+							active_slide.removeClass('moved-slide')
+										.css('left', 0);
+						});
 
-		// Display new image
-		active_slide.closest('.slides').find('img').eq(i)
-					.addClass('active-slide')
+			// Check new image height
+			height = settings.height === 'auto' ? next_slide.height() : settings.height;
+			parent.find('.slides').animate({
+				height: height + 'px'
+			});	
+
+			// Display new image
+			next_slide.addClass('active-slide')
 					.css('left', 100 * move + '%')
 					.animate({ left: 0 },'linear',function() { // Reattach event
-						self.off('click')
-							.on('click', $.fn.slider.move_slider );
+						self.parent().off('click','li');
+						self.parent().on('click','li', $.fn.slider.move_slider );
 					});
-
-		// Check new image height
-		height = settings.height === 'auto' ? $('.active-slide').height() : settings.height;
-		parent.find('.slides').animate({
-			height: height + 'px'
+		}).each(function() {
+			if (this.complete ||
+				this.readyState == "complete" ||
+				this.readyState == 4)
+			$(this).trigger('load');
 		});
 
 		// Update buttons
