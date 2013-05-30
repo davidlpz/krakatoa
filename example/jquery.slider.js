@@ -43,9 +43,11 @@
 				}
 				buttons += '</ul>';
 				self.find('.slider-control').append(buttons);
-				self.find('.buttons').on('click', 'li', $.fn.slider.move_slider);
+				self.find('.buttons').on('click', 'li', $.fn.slider.move_slider)
+									 .find('li').eq(settings.default_image).addClass('active-button');
 			}
 
+			// Wait for image to load and display
 			active_slide.one('load',function() {
 				// Set the slider width
 				width = settings.width === 'auto' ? self.find('.slider').width() : settings.width;
@@ -56,18 +58,12 @@
 				self.find('.slides').css('height', height);
 
 				// Display first image at the beginning
-				self.find('.buttons').find('li').eq(settings.default_image).addClass('active-button');
 				$(this).addClass('active-slide');
 				
 				// Plugin has been attached to the element
 				self.data('slider', true);
 
-			}).each(function() {
-				if (this.complete ||
-					this.readyState == "complete" ||
-					this.readyState == 4)
-				$(this).trigger('load');
-			});
+			}).each(image_loaded);
 		});
 	}
 
@@ -98,6 +94,7 @@
 		self.parent().off('click','li');
 		self.parent().on('click','li',function(e){ e.preventDefault(); });
 
+		// Wait for next image to load and move
 		next_slide = active_slide.closest('.slides').find('img').eq(i);
 		next_slide.one('load',function() {
 			// Hide old image
@@ -111,7 +108,7 @@
 			// Check new image height
 			height = settings.height === 'auto' ? next_slide.height() : settings.height;
 			parent.find('.slides').animate({
-				height: height + 'px'
+				height: height
 			});	
 
 			// Display new image
@@ -121,16 +118,19 @@
 						self.parent().off('click','li');
 						self.parent().on('click','li', $.fn.slider.move_slider );
 					});
-		}).each(function() {
-			if (this.complete ||
-				this.readyState == "complete" ||
-				this.readyState == 4)
-			$(this).trigger('load');
-		});
+		}).each(image_loaded);
 
 		// Update buttons
 		active_button.removeClass('active-button')
-					.parent().children().eq(i).addClass('active-button');
+					 .parent().children().eq(i).addClass('active-button');
+	}
+
+	// Check if the image is already loaded and trigger the event
+	function image_loaded() {
+		if (this.complete ||
+			this.readyState == "complete" ||
+			this.readyState == 4)
+		$(this).trigger('load');
 	}
 
 }(jQuery));
