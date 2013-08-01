@@ -4,6 +4,7 @@
 	var settings = {
 		width			: '400px',
 		height			: '300px',
+		display			: 'block',
 		loop			: true,
 		show_arrows		: true,
 		show_buttons	: true,
@@ -22,7 +23,28 @@
 			// Check if the plugin has not already been attached to the element
 			if (self.data('jslider')) return;
 
-			// Add arrows and handler
+			// Add styles
+			self.css({
+				'position': 'relative',
+				'width': settings.width
+			});
+
+			self.find('.slides').css({
+				'overflow': 'hidden',
+				'position': 'relative',
+				'height': settings.height
+			});
+
+			self.find('.slides img').css({
+				'position': 'absolute',
+				'top': 0,
+				'left': 0,
+				'width': '100%',
+				'height': 'auto',
+				'display': 'none',
+			});
+
+			// Add arrows and handler if activated
 			if (settings.show_arrows) {
 				self.find('.jslider-control').append('<ul class="arrows clearfix">' +
 													 '<li data-move="-1" class="arrow arrow-left"><a href="#">-1</a></li>' +
@@ -31,7 +53,7 @@
 				self.find('.arrows').on('click', 'li', $.fn.jslider.move);
 			}
 
-			// Add buttons and handler
+			// Add buttons and handler if activated
 			if (settings.show_buttons) {
 				length = self.find('.slides img').length;
 				buttons = '<ul class="buttons">'; 
@@ -47,19 +69,20 @@
 			// Wait for image to load and display
 			self.find('.slides img').eq(settings.default_image).one('load',function() {
 				var width, height;
+
 				// Set the jslider width
 				width = settings.width === 'auto' ? self.parent().width() + 'px' : settings.width;
-				self.css('width', width);
-
 				// Set the jslider height
 				height = settings.height === 'auto' ? $(this).height() + 'px' : settings.height;
-				self.find('.slides').css('height', height);
-
-				// Display first image at the beginning
-				$(this).addClass('active-slide').css('display', 'block');
-				
 				// Plugin has been attached to the element
-				self.data('jslider', true);
+				self.data('jslider', true)
+					.css({
+						'width': width,
+						'height': height,
+						'display': settings.display
+					});
+				// Display the active image
+				$(this).addClass('active-slide').css('display', 'block');
 
 			}).each(image_loaded);
 		});
@@ -89,8 +112,8 @@
 		}
 
 		// Remove event and prevent mouse default event
-		self.parent().off('click','li');
-		self.parent().on('click','li',function(e){ e.preventDefault(); });
+		self.parent().off('click','li')
+					 .on('click','li',function(e){ e.preventDefault(); });
 
 		// Wait for next image to load and move
 		next_slide = active_slide.closest('.slides').find('img').eq(i);

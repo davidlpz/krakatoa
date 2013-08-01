@@ -4,9 +4,8 @@ span, img, a, ul, li {
 	border:0;
 }
 .jslider{
-	width:400px;
+	display:none;
 	margin:50px auto;
-	position:relative;
 }
 .jslider-control{
 	padding-bottom:20px;
@@ -69,17 +68,4 @@ span, img, a, ul, li {
 }
 .pagination a:hover{
 	background-position:0 -30px;
-}
-.slides{
-	overflow:hidden;
-	position:relative;
-	height:300px;
-}
-.slides img{
-	position:absolute;
-	top:0;
-	left:0;
-	width:100%;
-	height:auto;
-	display:none;
 }

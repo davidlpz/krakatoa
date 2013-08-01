@@ -44,12 +44,19 @@ Load the script.
 
 Options are set with an object as second argument to the .jslider() method. They are all optional. Some options that you can specify:
 
-* **width**: width of the slider. Can be set to 'auto' (it will be the container's width) or a string. The default value is 400px.
-* **height**: height of the slider. Can be set to 'auto' (it will be the height of the actual image) or a string. The default value is 300px.
-* **loop**: begins again after last image. Boolean. Default value is true.
+* **width**: Width of the slider. Can be set to 'auto' (it will be the container's width) or a string. The default value is 400px.
+* **height**: Height of the slider. Can be set to 'auto' (it will be the height of the actual image) or a string. The default value is 300px.
+* **display**: Display mode of the slider, it works as the CSS property. Default value is 'block'.
+* **loop**: Begins again after last image. Boolean. Default value is true.
 * **show_arrows**: Show the arrows control. Boolean. Default value is true.
 * **show_buttons**: Show the pagination buttons. Boolean. Default value is true.
 * **default_image**: Default image to show. Integer. Default value is 0 and shows the first image.
+
+The following CSS is required to prevent anything to show while the script is loading:
+
+	.jslider{
+		display:none;
+	}
 
 The following CSS is not required but it does the work:
 
@@ -57,11 +64,6 @@ The following CSS is not required but it does the work:
 		margin:0;
 		padding:0;
 		border:0;
-	}
-	.jslider{
-		width:400px;
-		margin:50px auto;
-		position:relative;
 	}
 	.jslider-control{
 		padding-bottom:20px;
@@ -78,7 +80,7 @@ The following CSS is not required but it does the work:
 	}
 	.arrow a{
 		display:block;
-	 	width:13px;
+		width:13px;
 		height:0;
 		padding-top:16px;
 		overflow:hidden;
@@ -115,8 +117,8 @@ The following CSS is not required but it does the work:
 		height:0;
 		padding-top:10px;
 		background-image:url('img/pagination.png');
-	    background-position:0 0;
-	    overflow:hidden;
+		background-position:0 0;
+		overflow:hidden;
 	}
 	.active-button a,
 	.active-button a:hover{
@@ -124,17 +126,4 @@ The following CSS is not required but it does the work:
 	}
 	.pagination a:hover{
 		background-position:0 -30px;
-	}
-	.slides{
-		overflow:hidden;
-		position:relative;
-		height:300px;
-	}
-	.slides img{
-		position:absolute;
-		top:0;
-		left:0;
-		width:100%;
-		height:auto;
-		display:none;
 	}
