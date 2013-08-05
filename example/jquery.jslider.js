@@ -72,15 +72,15 @@
 
 				// Set the jslider width
 				width = settings.width === 'auto' ? self.parent().width() + 'px' : settings.width;
-				// Set the jslider height
-				height = settings.height === 'auto' ? $(this).height() + 'px' : settings.height;
 				// Plugin has been attached to the element
 				self.data('jslider', true)
 					.css({
 						'width': width,
-						'height': height,
 						'display': settings.display
 					});
+				// Set the jslider height
+				height = settings.height === 'auto' ? $(this).height() + 'px' : settings.height;
+				self.find('.slides').css('height', height);
 				// Display the active image
 				$(this).addClass('active-slide').css('display', 'block');
 
@@ -128,7 +128,7 @@
 						});
 
 			// Check new image height
-			height = settings.height === 'auto' ? next_slide.height() : settings.height;
+			height = settings.height === 'auto' ? next_slide.height() + 'px' : settings.height;
 			parent.find('.slides').animate({
 				height: height
 			});	
