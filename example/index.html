@@ -11,12 +11,20 @@
 <div class="jslider">
 	<div class="jslider-control"></div>
 	<div class="jslider-container">
-		<div class="slides">
-			<img src="img/1.png" />
-			<img src="img/2.png" />
-			<img src="img/3.png" />
-			<img src="img/4.png" />
-		</div>
+		<img src="http://thepetitebrunette.com/wp-content/uploads/2013/07/bere-11-612x600.jpg" />
+		<img src="img/2.png" />
+		<img src="img/3.png" />
+		<img src="http://4.bp.blogspot.com/--ox2_7AWSLk/UfojbOZvG_I/AAAAAAAAAaE/Mgi9La6V-Og/s1600/silla+rayas_600.jpg" />
+	</div>
+</div>
+
+<div class="jslider">
+	<div class="jslider-control"></div>
+	<div class="jslider-container">
+		<p>Slide 1</p>
+		<p>Slide 2</p>
+		<p>Slide 3</p>
+		<p>Slide 4</p>
 	</div>
 </div>
 
@@ -24,8 +32,8 @@
 <script src="jquery.jslider.js"></script>
 
 <script>
-	$(function(){
-		$('.jslider').jslider();
+	$(window).on('load',function(){
+		$('.jslider').jslider( { height: 'auto' });
 	});
 </script>
 

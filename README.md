@@ -1,31 +1,15 @@
 Getting started
 =========================
 
-jslider is a jQuery slider plugin. It needs a structure similar to this to work.
+jslider is a jQuery slider plugin. All you need is to wrap your content inside the jslider-container element. The classes are mandatory for the plugin to work.
 
 	<div class="jslider">
 		<div class="jslider-control"></div>
 		<div class="jslider-container">
-			<div class="slides">
-				<img src="..." />
-				<img src="..." />
-				<img src="..." />
-				...
-			</div>
-		</div>
-	</div>
-
-You can place the image inside `<a href=""></a>` and/or convert the `<div class="slides">` into a list.
-
-	<div class="jslider">
-		<div class="jslider-control"></div>
-		<div class="jslider-container">
-			<ul class="slides">
-				<li><a href="#"><img src="..." /></a></li>
-				<li><a href="#"><img src="..." /></a></li>
-				<li><a href="#"><img src="..." /></a></li>
-				...
-			</ul>
+			<div> Your content </div>
+			<div> Your content </div>
+			<div> Your content </div>
+			...
 		</div>
 	</div>
 
@@ -37,20 +21,20 @@ Add jQuery and the jslider script.
 Load the script.
 
 	<script>
-		$(function(){
+		$(window).on('load',function(){
 			$('.jslider').jslider( options );
 		});
 	</script>
 
-Options are set with an object as second argument to the .jslider() method. They are all optional. Some options that you can specify:
+Options are set with an object as second argument to the .jslider() method. They are all optional (obviosly):
 
 * **width**: Width of the slider. Can be set to 'auto' (it will be the container's width) or a string. The default value is 400px.
-* **height**: Height of the slider. Can be set to 'auto' (it will be the height of the actual image) or a string. The default value is 300px.
+* **height**: Height of the slider. Can be set to 'auto' (it will be the height of the actual slide) or a string. The default value is 300px.
 * **display**: Display mode of the slider, it works as the CSS property. Default value is 'block'.
-* **loop**: Begins again after last image. Boolean. Default value is true.
+* **default_slide**: Default slide to show. Integer. Default value is 0 and shows the first slide.
+* **loop**: Begins again after last slide. Boolean. Default value is true.
 * **show_arrows**: Show the arrows control. Boolean. Default value is true.
 * **show_buttons**: Show the pagination buttons. Boolean. Default value is true.
-* **default_image**: Default image to show. Integer. Default value is 0 and shows the first image.
 
 The following CSS is required to prevent anything to show while the script is loading:
 

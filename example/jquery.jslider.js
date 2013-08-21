@@ -5,10 +5,10 @@
 		width			: '400px',
 		height			: '300px',
 		display			: 'block',
+		default_slide	: 0,
 		loop			: true,
 		show_arrows		: true,
-		show_buttons	: true,
-		default_image	: 0
+		show_buttons	: true
 	};
 
 	$.fn.jslider = function(options) {
@@ -17,8 +17,10 @@
 
 		return this.each(function() {
 			var arrows, buttons, length,
+				width, height,
 				self = $(this),
-				i = 0;
+				i = 0,
+				default_slide = self.find('.jslider-container').children().eq(settings.default_slide);
 
 			// Check if the plugin has not already been attached to the element
 			if (self.data('jslider')) return;
@@ -29,13 +31,13 @@
 				'width': settings.width
 			});
 
-			self.find('.slides').css({
+			self.find('.jslider-container').css({
 				'overflow': 'hidden',
 				'position': 'relative',
 				'height': settings.height
 			});
 
-			self.find('.slides img').css({
+			self.find('.jslider-container').children().css({
 				'position': 'absolute',
 				'top': 0,
 				'left': 0,
@@ -55,44 +57,38 @@
 
 			// Add buttons and handler if activated
 			if (settings.show_buttons) {
-				length = self.find('.slides img').length;
-				buttons = '<ul class="buttons">'; 
+				length = self.find('.jslider-container').children().length;
+				buttons = '<ul class="buttons">';
 				for ( i; i< length; i++ ) {
 					buttons += '<li class="pagination"><a href="#">' + i + '</a></li>';
 				}
 				buttons += '</ul>';
 				self.find('.jslider-control').append(buttons);
 				self.find('.buttons').on('click', 'li', $.fn.jslider.move)
-									 .find('li').eq(settings.default_image).addClass('active-button');
+									 .find('li').eq(settings.default_slide).addClass('active-button');
 			}
 
-			// Wait for image to load and display
-			self.find('.slides img').eq(settings.default_image).one('load',function() {
-				var width, height;
-
-				// Set the jslider width
-				width = settings.width === 'auto' ? self.parent().width() + 'px' : settings.width;
-				// Plugin has been attached to the element
-				self.data('jslider', true)
-					.css({
-						'width': width,
-						'display': settings.display
-					});
-				// Set the jslider height
-				height = settings.height === 'auto' ? $(this).height() + 'px' : settings.height;
-				self.find('.slides').css('height', height);
-				// Display the active image
-				$(this).addClass('active-slide').css('display', 'block');
-
-			}).each(image_loaded);
+			// Set the jslider width
+			width = settings.width === 'auto' ? self.parent().outerWidth(true) + 'px' : settings.width;
+			// Plugin has been attached to the element
+			self.data('jslider', true)
+				.css({
+					'width': width,
+					'display': settings.display
+				});
+			// Set the jslider height
+			height = settings.height === 'auto' ? default_slide.outerHeight(true) + 'px' : settings.height;
+			self.find('.jslider-container').css('height', height);
+			// Display the active slide
+			default_slide.addClass('current').css('display', 'block');
 		});
 	}
 
 	$.fn.jslider.move = function(e){
-		e.preventDefault();
+		e.preventDefault(); // To prevent the # in the url
 		var self = $(this),
 			parent = self.closest('.jslider'),
-			active_slide = parent.find('.active-slide'),
+			current_slide = parent.find('.current'),
 			active_button = parent.find('.active-button'),
 			length = active_button.parent().children().length,
 			i, move, next_slide, height;
@@ -115,45 +111,32 @@
 		self.parent().off('click','li')
 					 .on('click','li',function(e){ e.preventDefault(); });
 
-		// Wait for next image to load and move
-		next_slide = active_slide.closest('.slides').find('img').eq(i);
+		// Move
+		next_slide = current_slide.closest('.jslider-container').children().eq(i);
 		next_slide.css('display', 'block');
-		next_slide.one('load',function() {
-			// Hide old image
-			active_slide.removeClass('active-slide')
-						.animate({ left: - (100 * move) + '%' },'linear',function(){
-							active_slide.css({ 'left': 0,
-												'display': 'none'
-											});
-						});
-
-			// Check new image height
-			height = settings.height === 'auto' ? next_slide.height() + 'px' : settings.height;
-			parent.find('.slides').animate({
-				height: height
-			});	
-
-			// Display new image
-			next_slide.addClass('active-slide')
-					.css('left', 100 * move + '%')
-					.animate({ left: 0 },'linear',function() { // Reattach event
-						self.parent().off('click','li');
-						self.parent().on('click','li', $.fn.jslider.move );
+		// Hide old slide
+		current_slide.removeClass('current')
+					.animate({ left: - (100 * move) + '%' },'linear',function(){
+						current_slide.css({ 'left': 0,
+											'display': 'none'
+										});
 					});
-					
-		}).each(image_loaded);
+		// Check new slide height
+		height = settings.height === 'auto' ? next_slide.outerHeight(true) + 'px' : settings.height;
+		parent.find('.jslider-container').animate({
+			height: height
+		});
+		// Display new slide
+		next_slide.addClass('current')
+				.css('left', 100 * move + '%')
+				.animate({ left: 0 },'linear',function() { // Reattach event
+					self.parent().off('click','li');
+					self.parent().on('click','li', $.fn.jslider.move );
+				});
 
 		// Update buttons
 		active_button.removeClass('active-button')
 					 .parent().children().eq(i).addClass('active-button');
-	}
-
-	// Check if the image is already loaded and trigger the event
-	function image_loaded() {
-		if (this.complete ||
-			this.readyState == "complete" ||
-			this.readyState == 4)
-		$(this).trigger('load');
 	}
 
 }(jQuery));
