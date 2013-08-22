@@ -3,11 +3,10 @@ span, img, a, ul, li {
 	padding:0;
 	border:0;
 }
-.krakatoa{
+.jslider{
 	display:none;
-	margin:50px auto;
 }
-.krakatoa-control{
+.jslider-control{
 	padding-bottom:20px;
 }
 .arrows{
