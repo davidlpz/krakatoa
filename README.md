@@ -6,7 +6,6 @@ Krakatoa is a jQuery slider plugin. All you need is to wrap your content inside 
 	<div class="krakatoa">
 		<div> Your content </div>
 		<div> Your content </div>
-		<div> Your content </div>
 	</div>
 
 Add jQuery and the Krakatoa script.
@@ -27,13 +26,23 @@ Options are set with an object as second argument to the .krakatoa() method.
 * **width**: Width of the slider. String. Works with px and %. The default value is '400px'.
 * **height**: Height of the slider. Can be set to 'auto' (it will be the height of the actual slide) or a string with units. The default value is '300px'.
 * **display**: Display mode of the slider, the same as the CSS property. String. Default value is 'block'.
-* **autoplay**: Move automatically the slider (except when the mouse is over). Boolean. Default value is true.
-* **direction**: Movement of the slider. String. Default value is 'right'.
-* **speed**: Speed of the movement in milliseconds. Integer. Default value is 2500.
-* **first**: Default slide to show. Integer. Default value is 0 and shows the first slide.
-* **loop**: Begins again after last slide. Boolean. Default value is true.
 * **arrows**: Show the arrows control. Boolean. Default value is true.
 * **buttons**: Show the pagination buttons. Boolean. Default value is true.
+* **items**: Numbers of items to show at the same time. Integer. Default value is 1.
+* **gutter**: Margin between items. Integer. Default value is 10.
+* **first**: Default slide to show. Integer. Default value is 0 and shows the first slide.
+* **loop**: Begins again after last slide. Boolean. Default value is true.
+* **autoplay**: Move automatically the slider (except when the mouse is over). Boolean. Default value is true.
+* **direction**: Movement of the slider. String. Default value is 'right'.
+* **delay**: Delay of the next movement in milliseconds. Integer. Default value is 2500.
+* **duration**: Duration of the movement in milliseconds. Integer. Default value is 500.
+
+More than one slider can co-exists in the same page. If different options are needed for each one, add a data- attribute to the container element.
+
+	<div class="krakatoa" data-settings="options">
+		<div> Your content </div>
+		<div> Your content </div>
+	</div>
 
 The following CSS is required to prevent anything to show while the script is loading:
 
