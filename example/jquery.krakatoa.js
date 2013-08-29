@@ -1,4 +1,7 @@
-// revisar todos los bucles
+/**
+ * Krakatoa
+ * https://github.com/davidlpz/krakatoa
+ */
 
 (function($) {
 
@@ -13,8 +16,8 @@
 			var arrows, buttons,
 				slider = $(this),
 				length = slider.children().length,
-				container, first_slide, slide, i,
-				width, height, slide_w, max_h = 0,
+				container, first_item, item, i,
+				width, height, item_w, max_h = 0,
 				settings;
 
 			// Load slider custom settings
@@ -52,7 +55,7 @@
 			});
 
 			// Add arrows and handler
-			slider.find('.krakatoa-control').append('<ul class="arrows clearfix">' +
+			slider.find('.krakatoa-control').append('<ul class="arrows">' +
 				'<li data-move="-1" class="arrow arrow-left"><a href="#">&laquo;</a></li>' +
 				'<li data-move="1" class="arrow arrow-right"><a href="#">&raquo;</a></li>' +
 				'</ul>');
@@ -73,19 +76,19 @@
 					  .find('li').eq(settings.first).addClass('active-button');
 			}
 
-			// Calculate container width and actual slide width
-			width = container.outerWidth(true);
-			slide_w = (width-(settings.items-1)*settings.gutter)/settings.items;
+			// Calculate slider inner width and actual item width
+			width = slider.width();
+			item_w = (width-(settings.items-1)*settings.gutter)/settings.items;
 
-			// Set slide(s) in position
+			// Set item(s) in position
 			for (i = 0; i < settings.items && settings.first + i < length; i++) {
-				slide = container.children().eq(settings.first + i);
-				slide.addClass('current').css({
+				item = container.children().eq(settings.first + i);
+				item.addClass('current').css({
 					'display': 'block',
-					'width': slide_w,
-					'left': (slide_w + settings.gutter) * i
+					'width': item_w,
+					'left': (item_w + settings.gutter) * i
 				});
-				height = settings.height === 'auto' ? slide.outerHeight(true) : settings.height;
+				height = settings.height === 'auto' ? item.height() : settings.height;
 				if (height > max_h) max_h = height;
 			}
 			container.css('height', height);
@@ -136,7 +139,7 @@
 			current_slide = container.children().eq(current),
 			length = container.children().length,
 			container, slide, i, move, next,
-			width, height, slide_w, max_h = 0,
+			width, height, item_w, max_h = 0,
 			deferred = $.Deferred(),
 			settings = e.data.settings,
 			aux = 0;
@@ -162,16 +165,16 @@
 		self.parent().off('click touchstart','li')
 					 .on('click touchstart','li',function(e){ e.preventDefault(); });
 
-		// Calculate container width and actual slide width
-		width = container.outerWidth(true);
-		slide_w = (width-(settings.items-1)*settings.gutter)/settings.items;
+		// Calculate slider inner width and actual slide width
+		width = slider.width();
+		item_w = (width-(settings.items-1)*settings.gutter)/settings.items;
 
-		// Set slide(s) in position
+		// Set item(s) in position
 		for (i = 0; i < settings.items; i++) {
-			// Hide current slide(s)
-			slide = container.children().eq(current + i);
-			slide.removeClass('current')
-				.animate({ left: - (width + settings.gutter) * move + (slide_w + settings.gutter) * i },
+			// Hide current item(s)
+			item = container.children().eq(current + i);
+			item.removeClass('current')
+				.animate({ left: - (width + settings.gutter) * move + (item_w + settings.gutter) * i },
 					settings.duration,'linear',function() {
 					$(this).css({
 						'left': 0,
@@ -179,20 +182,20 @@
 					});
 				});
 
-			// Display next slide(s)
+			// Display next item(s)
 			if (next + i > length - 1) continue;
 			aux++;
-			slide = container.children().eq(next + i);
-			slide.addClass('current').css({
+			item = container.children().eq(next + i);
+			item.addClass('current').css({
 					'display': 'block',
-					'width': slide_w,
-					'left': (width + settings.gutter) * move + (slide_w + settings.gutter) * i
+					'width': item_w,
+					'left': (width + settings.gutter) * move + (item_w + settings.gutter) * i
 				})
-				.animate({ left: (slide_w + settings.gutter) * i },settings.duration,'linear', function() {
+				.animate({ left: (item_w + settings.gutter) * i },settings.duration,'linear', function() {
 					aux--;
 					if (aux === 0) deferred.resolve();
 				});
-			height = settings.height === 'auto' ? slide.outerHeight(true) : settings.height;
+			height = settings.height === 'auto' ? item.height() : settings.height;
 			if (height > max_h) max_h = height;
 		}
 		container.css('height', height);
@@ -236,4 +239,3 @@
 	}
 
 }(jQuery));
-
