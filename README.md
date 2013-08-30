@@ -24,14 +24,14 @@ Load the script.
 Options are set with an object as second argument to the .krakatoa() method.
 
 * **width**: Width of the slider. String. Works with px and %. The default value is '400px'.
-* **height**: Height of the slider. Can be set to 'auto' (it will be the height of the actual slide) or a string with units. The default value is '300px'.
+* **height**: Height of the slider. Can be set to 'auto' (it will be the height of the actual item) or a string with units. The default value is '300px'.
 * **display**: Display mode of the slider, the same as the CSS property. String. Default value is 'block'.
 * **arrows**: Show the arrows control. Boolean. Default value is true.
 * **buttons**: Show the pagination buttons. Boolean. Default value is true.
 * **items**: Numbers of items to show at the same time. Integer. Default value is 1.
 * **gutter**: Margin between items. Integer. Default value is 10.
-* **first**: Default slide to show. Integer. Default value is 0 and shows the first slide.
-* **loop**: Begins again after last slide. Boolean. Default value is true.
+* **first**: Default item to show. Integer. Default value is 0 and shows the first item.
+* **loop**: Begins again after last item. Boolean. Default value is true.
 * **autoplay**: Move automatically the slider (except when the mouse is over). Boolean. Default value is true.
 * **direction**: Movement of the slider. String. Default value is 'right'.
 * **delay**: Delay of the next movement in milliseconds. Integer. Default value is 2500.
