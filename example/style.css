@@ -8,9 +8,6 @@ span, img, a, ul, li {
 	padding:0;
 	border:0;
 }
-li{
-	list-style-type:none;
-}
 .krakatoa{
 	display:none;
 	margin:50px auto;
