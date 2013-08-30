@@ -136,10 +136,9 @@
 			slider = self.closest('.krakatoa-control').parent(),
 			container = slider.find('.krakatoa-container'),
 			current = parseInt(slider.attr('data-current')),
-			current_slide = container.children().eq(current),
 			length = container.children().length,
 			container, slide, i, move, next,
-			width, height, item_w, max_h = 0,
+			width, height, item, item_w, max_h = 0,
 			deferred = $.Deferred(),
 			settings = e.data.settings,
 			aux = 0;
