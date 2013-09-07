@@ -80,6 +80,13 @@
 			width = slider.width();
 			item_w = (width-(settings.items-1)*settings.gutter)/settings.items;
 
+			// if auto-fixed height, calculate the max_h of all items
+			if (settings.height === 'auto-fixed') {
+				for (i = 0; i < length; i++) {
+					height = container.children().eq(i).height();
+					if (height > max_h) max_h = height;
+				}
+			}
 			// Set item(s) in position
 			for (i = 0; i < settings.items && settings.first + i < length; i++) {
 				item = container.children().eq(settings.first + i);
@@ -88,10 +95,13 @@
 					'width': item_w,
 					'left': (item_w + settings.gutter) * i
 				});
-				height = settings.height === 'auto' ? item.height() : settings.height;
-				if (height > max_h) max_h = height;
+				// If not auto-fixed, calculate actual height
+				if (settings.height !== 'auto-fixed') {
+					height = settings.height === 'auto' ? item.outerHeight(true) : settings.height.replace('px','');
+					if (height > max_h) max_h = height;
+				}
 			}
-			container.css('height', height);
+			container.css('height', max_h);
 			slider.attr('data-current', settings.first);
 
 			// Plugin has been attached to the element
@@ -194,10 +204,13 @@
 					aux--;
 					if (aux === 0) deferred.resolve();
 				});
-			height = settings.height === 'auto' ? item.height() : settings.height;
-			if (height > max_h) max_h = height;
+			// If not auto-fixed, calculate actual height
+			if (settings.height === 'auto') {
+				height = item.outerHeight(true);
+				if (height > max_h) max_h = height;
+			}
 		}
-		container.css('height', height);
+		if (settings.height === 'auto') container.css('height', max_h);
 		slider.attr('data-current', next);
 
 		deferred.done(function() { // Reattach event

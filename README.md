@@ -24,7 +24,7 @@ Load the script.
 Options are set with an object as second argument to the .krakatoa() method.
 
 * **width**: Width of the slider. String. Works with px and %. The default value is '400px'.
-* **height**: Height of the slider. Can be set to 'auto' (it will be the height of the actual item) or a string with units. The default value is '300px'.
+* **height**: Height of the slider. Can be set to 'auto' (it will be the height of the actual item), 'auto-fixed' (a fixed height set to the max height of all items) or a string with units. The default value is '300px'.
 * **display**: Display mode of the slider, the same as the CSS property. String. Default value is 'block'.
 * **arrows**: Show the arrows control. Boolean. Default value is true.
 * **buttons**: Show the pagination buttons. Boolean. Default value is true.
