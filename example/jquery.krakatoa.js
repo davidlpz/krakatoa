@@ -39,19 +39,13 @@
 			});
 			container.css({
 				'overflow': 'hidden',
-				'position': 'relative',
-				'height': settings.height
+				'position': 'relative'
 			});
 			container.children().css({
 				'position': 'absolute',
 				'top': 0,
 				'left': 0,
-				'width': settings.width,
-				'height': settings.height,
 				'display': 'none'
-			});
-			container.find('img').css({
-				'width': '100%',
 			});
 
 			// Add arrows and handler
@@ -60,6 +54,7 @@
 				'<li data-move="1" class="arrow arrow-right"><a href="#">&raquo;</a></li>' +
 				'</ul>');
 			slider.find('.arrows').on('click touchstart', 'li', {settings: settings}, do_the_move);
+
 			// Hide if not activated
 			if (!settings.arrows)
 				slider.find('.arrows').css('display','none');
@@ -80,29 +75,33 @@
 			width = slider.width();
 			item_w = (width-(settings.items-1)*settings.gutter)/settings.items;
 
-			// if auto-fixed height, calculate the max_h of all items
-			if (settings.height === 'auto-fixed') {
-				for (i = 0; i < length; i++) {
-					height = container.children().eq(i).height();
+			// Set width and calculate height of all items if necesary
+			for (i = 0; i < length; i++) {
+				item = container.children().eq(i);
+				item.css('width',item_w);
+				if (settings.height === 'max') {
+					height = item.outerHeight(true);
 					if (height > max_h) max_h = height;
 				}
 			}
+
 			// Set item(s) in position
 			for (i = 0; i < settings.items && settings.first + i < length; i++) {
 				item = container.children().eq(settings.first + i);
 				item.addClass('current').css({
 					'display': 'block',
-					'width': item_w,
 					'left': (item_w + settings.gutter) * i
 				});
-				// If not auto-fixed, calculate actual height
-				if (settings.height !== 'auto-fixed') {
+				// If height not set to max, calculate item actual height
+				if (settings.height !== 'max') {
 					height = settings.height === 'auto' ? item.outerHeight(true) : settings.height.replace('px','');
 					if (height > max_h) max_h = height;
 				}
 			}
-			container.css('height', max_h);
 			slider.attr('data-current', settings.first);
+
+			// Set container height
+			container.css('height', max_h);
 
 			// Plugin has been attached to the element
 			slider.attr('data-krakatoa', true);
@@ -154,6 +153,7 @@
 			aux = 0;
 
 		e.preventDefault(); // To prevent the # in the url
+
 		// Check what's been clicked
 		if (self.attr('data-move')) { // arrow or auto play
 			move = self.data('move');
@@ -174,7 +174,7 @@
 		self.parent().off('click touchstart','li')
 					 .on('click touchstart','li',function(e){ e.preventDefault(); });
 
-		// Calculate slider inner width and actual slide width
+		// Calculate slider inner width and actual item width
 		width = slider.width();
 		item_w = (width-(settings.items-1)*settings.gutter)/settings.items;
 
@@ -197,23 +197,23 @@
 			item = container.children().eq(next + i);
 			item.addClass('current').css({
 					'display': 'block',
-					'width': item_w,
 					'left': (width + settings.gutter) * move + (item_w + settings.gutter) * i
 				})
 				.animate({ left: (item_w + settings.gutter) * i },settings.duration,'linear', function() {
 					aux--;
 					if (aux === 0) deferred.resolve();
 				});
-			// If not auto-fixed, calculate actual height
+			// If auto, calculate actual height
 			if (settings.height === 'auto') {
 				height = item.outerHeight(true);
 				if (height > max_h) max_h = height;
+				container.css('height', max_h);
 			}
 		}
-		if (settings.height === 'auto') container.css('height', max_h);
 		slider.attr('data-current', next);
 
-		deferred.done(function() { // Reattach event
+		// Reattach event
+		deferred.done(function() {
 			if (settings.playing) $.fn.krakatoa.play(settings,slider);
 			self.parent().off('click touchstart','li');
 			self.parent().on('click touchstart','li', {settings: settings}, do_the_move );
@@ -227,6 +227,7 @@
 		}
 	}
 
+	// Convert slider data-settings to Object
 	function stringToObj(s){
 		var obj = new Object(),
 			array = [],
