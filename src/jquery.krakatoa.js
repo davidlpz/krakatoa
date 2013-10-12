@@ -26,6 +26,9 @@
 			// Check if the plugin has not already been attached to the element
 			if (slider.data('krakatoa')) return;
 
+			// Plugin has been attached to the element
+			slider.attr('data-krakatoa', true);
+
 			// Structure the slider
 			slider.html('<div class="krakatoa-control"></div>' +
 				'<div class="krakatoa-container">' + slider.html() + '</div>');
@@ -102,9 +105,6 @@
 
 			// Set container height
 			container.css('height', max_h);
-
-			// Plugin has been attached to the element
-			slider.attr('data-krakatoa', true);
 
 			// Animate the slider
 			if (settings.autoplay) {
