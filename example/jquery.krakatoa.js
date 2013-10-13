@@ -97,8 +97,7 @@
 				});
 				// If height not set to max, calculate item actual height
 				if (settings.height !== 'max') {
-					height = settings.height === 'auto' ? item.outerHeight(true) : settings.height.replace('px','');
-					if (height > max_h) max_h = height;
+					max_h = settings.height === 'auto' ? item.outerHeight(true) : settings.height;
 				}
 			}
 			slider.attr('data-current', settings.first);
