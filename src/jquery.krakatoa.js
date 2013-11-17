@@ -16,7 +16,7 @@
 			var arrows, buttons,
 				slider = $(this),
 				length = slider.children().length,
-				container, first_item, item, i,
+				container, item, i,
 				width, height, item_w, max_h = 0,
 				settings;
 
@@ -145,7 +145,7 @@
 			container = slider.find('.krakatoa-container'),
 			current = parseInt(slider.attr('data-current')),
 			length = container.children().length,
-			container, slide, i, move, next,
+			i, move, next,
 			width, height, item, item_w, max_h = 0,
 			deferred = $.Deferred(),
 			settings = e.data.settings,
