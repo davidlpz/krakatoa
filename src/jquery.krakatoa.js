@@ -51,33 +51,33 @@
 				'display': 'none'
 			});
 
-			// Show control only when items to scroll are enough
-                        if (settings.items != length){
+			// Show control only when there's enough items to scroll
+			if (settings.items < length){
 
-                                // Add arrows and handler
-                                arrows = '<ul class="arrows">'+
-                                '<li data-move="-1" class="arrow arrow-left"><a href="#">&laquo;</a></li>'+
-                                '<li data-move="1" class="arrow arrow-right"><a href="#">&raquo;</a></li>' +
-                                '</ul>';
-                                slider.find('.krakatoa-control').append(arrows);
-                                slider.find('.arrows').on('click touchstart', 'li', {settings: settings}, do_the_move);
-                
-                                // Hide if not activated (hide css cause we need to trigger arrows when autoplay is set)
-                                if (!settings.arrows)
-                                        slider.find('.arrows').css('display','none');
-                
-                                // Add buttons and handler if activated
-                                if (settings.buttons) {
-                                        buttons = '<ul class="buttons">';
-                                        for (i = 0; i < length / settings.items; i++) {
-                                                buttons += '<li class="pagination"><a href="#">' + i + '</a></li>';
-                                        }
-                                        buttons += '</ul>';
-                                        slider.find('.krakatoa-control').append(buttons);
-                                        slider.find('.buttons').on('click touchstart', 'li', {settings: settings}, do_the_move )
-                                              .find('li').eq(settings.first).addClass('active-button');
-                                }
-                        }
+				// Add arrows and handler
+				slider.find('.krakatoa-control').append('<ul class="arrows">' +
+					'<li data-move="-1" class="arrow arrow-left"><a href="#">&laquo;</a></li>' +
+					'<li data-move="1" class="arrow arrow-right"><a href="#">&raquo;</a></li>' +
+					'</ul>');
+				slider.find('.arrow a').on('click touchstart', {settings: settings}, do_the_move);
+
+				// Hide if not activated
+				if (!settings.arrows)
+					slider.find('.arrows').css('display','none');
+
+				// Add buttons and handler if activated
+				if (settings.buttons) {
+					buttons = '<ul class="buttons">';
+					for (i = 0; i < length / settings.items; i++) {
+						buttons += '<li class="pagination"><a href="#">' + i + '</a></li>';
+					}
+					buttons += '</ul>';
+					slider.find('.krakatoa-control').append(buttons);
+					slider.find('.buttons a').on('click touchstart', {settings: settings}, do_the_move );
+					slider.find('.buttons').find('li').eq(settings.first).addClass('active-button');
+				}
+
+			}
 
 			// Calculate slider inner width and actual item width
 			width = slider.width();
@@ -159,8 +159,8 @@
 		e.preventDefault(); // To prevent the # in the url
 
 		// Check what's been clicked
-		if (self.attr('data-move')) { // arrow or auto play
-			move = self.data('move');
+		if (self.parent().attr('data-move')) { // arrow or auto play
+			move = self.parent().data('move');
 			next = current + settings.items * move;
 			if (settings.loop && (next < 0 || next >= length)) {
 				next = Math.ceil(length/settings.items) * settings.items - next * move;
@@ -170,13 +170,13 @@
 			}
 		} else if (settings.buttons) { // button
 			if (self.hasClass('active-button')) return;
-			move = (self.index() * settings.items > current) ? 1 : -1;
-			next = self.index() * settings.items;
+			move = (self.parent().index() * settings.items > current) ? 1 : -1;
+			next = self.parent().index() * settings.items;
 		}
 
 		// Remove event and prevent mouse default event
-		self.parent().off('click touchstart','li')
-					 .on('click touchstart','li',function(e){ e.preventDefault(); });
+		self.off('click touchstart')
+			.on('click touchstart',function(e){ e.preventDefault(); });
 
 		// Calculate slider inner width and actual item width
 		width = slider.width();
@@ -219,8 +219,8 @@
 		// Reattach event
 		deferred.done(function() {
 			if (settings.playing) $.fn.krakatoa.play(settings,slider);
-			self.parent().off('click touchstart','li');
-			self.parent().on('click touchstart','li', {settings: settings}, do_the_move );
+			self.off('click touchstart');
+			self.on('click touchstart', {settings: settings}, do_the_move );
 		});
 
 		// Update buttons
