@@ -51,28 +51,33 @@
 				'display': 'none'
 			});
 
-			// Add arrows and handler
-			slider.find('.krakatoa-control').append('<ul class="arrows">' +
-				'<li data-move="-1" class="arrow arrow-left"><a href="#">&laquo;</a></li>' +
-				'<li data-move="1" class="arrow arrow-right"><a href="#">&raquo;</a></li>' +
-				'</ul>');
-			slider.find('.arrows').on('click touchstart', 'li', {settings: settings}, do_the_move);
+			// Show control only when items to scroll are enough
+                        if (settings.items != length){
 
-			// Hide if not activated
-			if (!settings.arrows)
-				slider.find('.arrows').css('display','none');
-
-			// Add buttons and handler if activated
-			if (settings.buttons) {
-				buttons = '<ul class="buttons">';
-				for (i = 0; i < length / settings.items; i++) {
-					buttons += '<li class="pagination"><a href="#">' + i + '</a></li>';
-				}
-				buttons += '</ul>';
-				slider.find('.krakatoa-control').append(buttons);
-				slider.find('.buttons').on('click touchstart', 'li', {settings: settings}, do_the_move )
-					  .find('li').eq(settings.first).addClass('active-button');
-			}
+                                // Add arrows and handler
+                                arrows = '<ul class="arrows">'+
+                                '<li data-move="-1" class="arrow arrow-left"><a href="#">&laquo;</a></li>'+
+                                '<li data-move="1" class="arrow arrow-right"><a href="#">&raquo;</a></li>' +
+                                '</ul>';
+                                slider.find('.krakatoa-control').append(arrows);
+                                slider.find('.arrows').on('click touchstart', 'li', {settings: settings}, do_the_move);
+                
+                                // Hide if not activated (hide css cause we need to trigger arrows when autoplay is set)
+                                if (!settings.arrows)
+                                        slider.find('.arrows').css('display','none');
+                
+                                // Add buttons and handler if activated
+                                if (settings.buttons) {
+                                        buttons = '<ul class="buttons">';
+                                        for (i = 0; i < length / settings.items; i++) {
+                                                buttons += '<li class="pagination"><a href="#">' + i + '</a></li>';
+                                        }
+                                        buttons += '</ul>';
+                                        slider.find('.krakatoa-control').append(buttons);
+                                        slider.find('.buttons').on('click touchstart', 'li', {settings: settings}, do_the_move )
+                                              .find('li').eq(settings.first).addClass('active-button');
+                                }
+                        }
 
 			// Calculate slider inner width and actual item width
 			width = slider.width();
