@@ -122,7 +122,7 @@
 
 	$.fn.krakatoa.play = function(settings,slider) {
 		frameId = window.setTimeout(function() {
-			slider.find( '.arrow-'+settings.direction).trigger('click');
+			slider.find( '.arrow-'+settings.direction + ' a').trigger('click');
 		}, settings.delay);
 		if (settings.autoplay) settings.playing = true;
 	}
@@ -138,7 +138,7 @@
 		first			: 0,
 		gutter			: 10,
 		loop			: false,
-		autoplay		: false,
+		autoplay		: true,
 		direction		: 'right',
 		delay			: 2000,
 		duration		: 500
@@ -151,7 +151,8 @@
 			current = parseInt(slider.attr('data-current')),
 			length = container.children().length,
 			i, move, next,
-			width, height, item, item_w, max_h = 0,
+			width, height,
+			item, item_w, max_h = 0,
 			deferred = $.Deferred(),
 			settings = e.data.settings,
 			aux = 0;
