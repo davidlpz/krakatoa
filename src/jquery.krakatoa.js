@@ -141,7 +141,8 @@
 		autoplay		: true,
 		direction		: 'right',
 		delay			: 2000,
-		duration		: 500
+		duration		: 500,
+		easing			: 'swing'
 	};
 
 	function do_the_move(e) {
