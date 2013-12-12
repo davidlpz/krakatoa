@@ -141,7 +141,8 @@
 		autoplay		: true,
 		direction		: 'right',
 		delay			: 2000,
-		duration		: 500
+		duration		: 500,
+		easing			: 'swing'
 	};
 
 	function do_the_move(e) {
@@ -189,7 +190,7 @@
 			item = container.children().eq(current + i);
 			item.removeClass('current')
 				.animate({ left: - (width + settings.gutter) * move + (item_w + settings.gutter) * i },
-					settings.duration,'linear',function() {
+					settings.duration,settings.easing,function() {
 					$(this).css({
 						'left': 0,
 						'display': 'none'
@@ -204,7 +205,7 @@
 					'display': 'block',
 					'left': (width + settings.gutter) * move + (item_w + settings.gutter) * i
 				})
-				.animate({ left: (item_w + settings.gutter) * i },settings.duration,'linear', function() {
+				.animate({ left: (item_w + settings.gutter) * i },settings.duration,settings.easing, function() {
 					aux--;
 					if (aux === 0) deferred.resolve();
 				});
