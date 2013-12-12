@@ -3,33 +3,47 @@
  * https://github.com/davidlpz/krakatoa
  */
 
-(function($) {
+;(function ($, window, document, undefined) {
 
-	var frameId = 0;
+	// Defaults settings
+	var defaults = {
+		width: '400px',
+		height: '300px',
+		display: 'block',
+		arrows: true,
+		buttons: true,
+		items: 1,
+		first: 0,
+		gutter: 10,
+		loop: false,
+		autoplay: true,
+		direction: 1,
+		delay: 2500,
+		duration: 500,
+		easing: 'swing'
+	};
 
-	// Plugin definition
-	$.fn.krakatoa = function(options) {
-		// Load global settings
-		var options = $.extend( {}, $.fn.krakatoa.defaults, options );
+	// Plugin constructor
+	function Krakatoa(element, options) {
+		this.deferred = null;
+		this.frameId = 0;
+		this.playing = false;
+		this.slider = $(element);
+		this.settings = $.extend( {}, defaults, options, stringToObj(this.slider.data('settings')));
+		this.init();
+	}
 
-		return this.each(function() {
-			var arrows, buttons,
-				slider = $(this),
+	Krakatoa.prototype = {
+		init: function() {
+			var self = this,
+				slider = self.slider,
+				settings = self.settings,
 				length = slider.children().length,
-				container, item, i,
-				width, height, item_w, max_h = 0,
-				settings;
+				i, item, item_w, width, height,
+				container, arrows, buttons,
+				max_h = 0;
 
-			// Load slider custom settings
-			settings = ($(this).data('settings')) ? $.extend({}, options, stringToObj($(this).data('settings'))) : options;
-
-			// Check if the plugin has not already been attached to the element
-			if (slider.data('krakatoa')) return;
-
-			// Plugin has been attached to the element
-			slider.attr('data-krakatoa', true);
-
-			// Structure the slider
+			// Add the slider structure
 			slider.html('<div class="krakatoa-control"></div>' +
 				'<div class="krakatoa-container">' + slider.html() + '</div>');
 			container = slider.find('.krakatoa-container');
@@ -50,34 +64,6 @@
 				'left': 0,
 				'display': 'none'
 			});
-
-			// Show control only when there's enough items to scroll
-			if (settings.items < length){
-
-				// Add arrows and handler
-				slider.find('.krakatoa-control').append('<ul class="arrows">' +
-					'<li data-move="-1" class="arrow arrow-left"><a href="#">&laquo;</a></li>' +
-					'<li data-move="1" class="arrow arrow-right"><a href="#">&raquo;</a></li>' +
-					'</ul>');
-				slider.find('.arrow a').on('click touchstart', {settings: settings}, do_the_move);
-
-				// Hide if not activated
-				if (!settings.arrows)
-					slider.find('.arrows').css('display','none');
-
-				// Add buttons and handler if activated
-				if (settings.buttons) {
-					buttons = '<ul class="buttons">';
-					for (i = 0; i < length / settings.items; i++) {
-						buttons += '<li class="pagination"><a href="#">' + i + '</a></li>';
-					}
-					buttons += '</ul>';
-					slider.find('.krakatoa-control').append(buttons);
-					slider.find('.buttons a').on('click touchstart', {settings: settings}, do_the_move );
-					slider.find('.buttons').find('li').eq(settings.first).addClass('active-button');
-				}
-
-			}
 
 			// Calculate slider inner width and actual item width
 			width = slider.width();
@@ -105,145 +91,170 @@
 					max_h = settings.height === 'auto' ? item.outerHeight(true) : settings.height;
 				}
 			}
-			slider.attr('data-current', settings.first);
 
 			// Set container height
 			container.css('height', max_h);
 
+			// Set current item
+			slider.data('current', settings.first);
+
+			// Show control only when there's enough items to scroll
+			if (settings.items < length) {
+				// Add arrows and handler if activated
+				if (settings.arrows) {
+					slider.find('.krakatoa-control').append('<div class="arrows">' +
+						'<a class="arrow arrow-left" data-direction="-1" href="#">&laquo;</a>' +
+						'<a class="arrow arrow-right" data-direction="1" href="#">&raquo;</a>' +
+						'</div>');
+					slider.find('.arrow').on('click touchstart', { krakatoa: self }, click_handler);
+				}
+
+				// Add buttons and handler if activated
+				if (settings.buttons) {
+					buttons = '<ul class="buttons">';
+					for (i = 0; i < length / settings.items; i++) {
+						buttons += '<li class="pagination"><a href="#">' + i + '</a></li>';
+					}
+					buttons += '</ul>';
+					slider.find('.krakatoa-control').append(buttons);
+					slider.find('.buttons a').on('click touchstart', { krakatoa: self }, click_handler);
+					slider.find('.buttons').find('li').eq(settings.first).addClass('active-button');
+				}
+			}
+
 			// Animate the slider
 			if (settings.autoplay) {
-				settings.playing = true;
-				$.fn.krakatoa.play(settings,slider);
-				slider.on('mouseleave', function() { $.fn.krakatoa.play(settings,slider); } );
-				slider.on('mouseover', function() { clearTimeout(frameId); settings.playing = false; });
-			} else settings.playing = false;
-		});
-	};
+				self.play();
+				slider.on('mouseleave', function() { self.play(); });
+				slider.on('mouseover', function() { clearTimeout(self.frameId); self.playing = false; });
+			}
+		},
 
-	$.fn.krakatoa.play = function(settings,slider) {
-		frameId = window.setTimeout(function() {
-			slider.find( '.arrow-'+settings.direction + ' a').trigger('click');
-		}, settings.delay);
-		if (settings.autoplay) settings.playing = true;
-	}
+		play: function() {
+			var self = this;
 
-	// Plugin defaults
-	$.fn.krakatoa.defaults = {
-		width			: '400px',
-		height			: '300px',
-		display			: 'block',
-		arrows			: true,
-		buttons			: true,
-		items			: 1,
-		first			: 0,
-		gutter			: 10,
-		loop			: false,
-		autoplay		: true,
-		direction		: 'right',
-		delay			: 2000,
-		duration		: 500,
-		easing			: 'swing'
-	};
+			self.playing = true;
+			self.frameId = window.setTimeout(function() {
+				if (self.slider.find(':animated').length === 0)
+					self.do_the_move(self.settings.direction);
+				self.deferred.done(function() {
+					if (self.playing) self.play();
+				});
+			}, self.settings.delay);
+		},
 
-	function do_the_move(e) {
-		var self = $(this),
-			slider = self.closest('.krakatoa-control').parent(),
-			container = slider.find('.krakatoa-container'),
-			current = parseInt(slider.attr('data-current')),
-			length = container.children().length,
-			i, move, next,
-			width, height,
-			item, item_w, max_h = 0,
-			deferred = $.Deferred(),
-			settings = e.data.settings,
-			aux = 0;
+		do_the_move: function(direction) {
+			var self = this,
+				slider = this.slider,
+				settings = this.settings,
+				container = slider.find('.krakatoa-container'),
+				length = container.children().length,
+				current = parseInt(slider.data('current')),
+				next = current + settings.items*direction,
+				move = direction / Math.abs(direction),
+				i, item, item_w, width, height,
+				max_h = 0, moved = 0;
 
-		e.preventDefault(); // To prevent the # in the url
+			self.deferred = $.Deferred();
 
-		// Check what's been clicked
-		if (self.parent().attr('data-move')) { // arrow or auto play
-			move = self.parent().data('move');
-			next = current + settings.items * move;
+			// If loop enabled, check for beggining or end
 			if (settings.loop && (next < 0 || next >= length)) {
 				next = Math.ceil(length/settings.items) * settings.items - next * move;
 			} else if (next < 0 || next >= length) {
-				if (settings.playing) settings.playing = false;
+				self.deferred.resolve();
 				return;
 			}
-		} else if (settings.buttons) { // button
+
+			// Calculate slider inner width and actual item width
+			width = slider.width();
+			item_w = (width-(settings.items-1)*settings.gutter)/settings.items;
+
+			// Set item(s) in position
+			for (i = 0; i < settings.items; i++) {
+				// Hide current item(s)
+				item = container.children().eq(current + i);
+				item.removeClass('current')
+					.animate({ left: -(width + settings.gutter) * move + (item_w + settings.gutter) * i },
+						settings.duration,settings.easing,function() {
+						$(this).css({
+							'left': 0,
+							'display': 'none'
+						});
+					});
+				// Display next item(s)
+				if (next + i > length - 1) continue;
+				moved++;
+				item = container.children().eq(next + i);
+				item.addClass('current')
+					.css({
+						'display': 'block',
+						'left': (width + settings.gutter) * move + (item_w + settings.gutter) * i
+					})
+					.animate({ left: (item_w + settings.gutter) * i },settings.duration,settings.easing,function() {
+						if (--moved === 0) self.deferred.resolve();
+					});
+				// If auto, calculate actual height
+				if (settings.height === 'auto') {
+					height = item.outerHeight(true);
+					if (height > max_h) max_h = height;
+					container.css('height', max_h);
+				}
+			}
+
+			// Set new current item
+			slider.data('current', next);
+
+			// Update buttons
+			current = Math.round(next / settings.items);
+			if (settings.buttons) {
+				slider.find('.active-button').removeClass('active-button')
+					  .parent().children().eq(current).addClass('active-button');
+			}
+		}
+	};
+
+	// Click/touch event handler
+	function click_handler(e) {
+		var self = $(this),
+			krakatoa = e.data.krakatoa,
+			current = Math.round(krakatoa.slider.data('current')/krakatoa.settings.items),
+			direction;
+
+		e.preventDefault(); // To prevent the # in the url
+
+		if (krakatoa.slider.find(':animated').length > 0) return;
+
+		if (self.data('direction')) { // arrow or auto play
+			direction = self.data('direction');
+		} else if (krakatoa.settings.buttons) { // button
 			if (self.parent().hasClass('active-button')) return;
-			move = (self.parent().index() * settings.items > current) ? 1 : -1;
-			next = self.parent().index() * settings.items;
+			direction = self.parent().index() - current;
 		}
 
 		// Remove event and prevent mouse default event
 		self.off('click touchstart')
-			.on('click touchstart',function(e){ e.preventDefault(); });
+			.on('click touchstart', function(e){ e.preventDefault(); });
 
-		// Calculate slider inner width and actual item width
-		width = slider.width();
-		item_w = (width-(settings.items-1)*settings.gutter)/settings.items;
-
-		// Set item(s) in position
-		for (i = 0; i < settings.items; i++) {
-			// Hide current item(s)
-			item = container.children().eq(current + i);
-			item.removeClass('current')
-				.animate({ left: - (width + settings.gutter) * move + (item_w + settings.gutter) * i },
-					settings.duration,settings.easing,function() {
-					$(this).css({
-						'left': 0,
-						'display': 'none'
-					});
-				});
-
-			// Display next item(s)
-			if (next + i > length - 1) continue;
-			aux++;
-			item = container.children().eq(next + i);
-			item.addClass('current').css({
-					'display': 'block',
-					'left': (width + settings.gutter) * move + (item_w + settings.gutter) * i
-				})
-				.animate({ left: (item_w + settings.gutter) * i },settings.duration,settings.easing, function() {
-					aux--;
-					if (aux === 0) deferred.resolve();
-				});
-			// If auto, calculate actual height
-			if (settings.height === 'auto') {
-				height = item.outerHeight(true);
-				if (height > max_h) max_h = height;
-				container.css('height', max_h);
-			}
-		}
-		slider.attr('data-current', next);
+		// Move the slider
+		krakatoa.do_the_move(direction);
 
 		// Reattach event
-		deferred.done(function() {
-			if (settings.playing) $.fn.krakatoa.play(settings,slider);
+		krakatoa.deferred.done(function() {
 			self.off('click touchstart');
-			self.on('click touchstart', {settings: settings}, do_the_move );
+			self.on('click touchstart', { krakatoa: krakatoa }, click_handler);
 		});
-
-		// Update buttons
-		current = Math.round(next / settings.items);
-		if (settings.buttons) {
-			slider.find('.active-button').removeClass('active-button')
-				  .parent().children().eq(current).addClass('active-button');
-		}
 	}
 
-	// Convert slider data-settings to Object
+	// Convert slider data-settings to JavaScript object
 	function stringToObj(s){
 		var obj = new Object(),
 			array = [],
-			i = 0,
-			value;
+			i, value;
 
-		if (typeof s !== 'string') return;
+		if (typeof s !== 'string') return obj;
 		s = s.replace(/[{}\s]/g,'');
 		array = s.split(',');
-		for (i; i < array.length; i++) {
+		for (i = 0; i < array.length; i++) {
 			value = array[i].split(':');
 			if (!isNaN(value[1]-0)) {
 				if (value[1] % 1 === 0)
@@ -257,4 +268,13 @@
 		return obj;
 	}
 
-}(jQuery));
+	// Plugin wrapper
+	$.fn.krakatoa = function(options) {
+		return this.each(function() {
+			if (!$(this).data('krakatoa')) {
+				$.data(this, 'krakatoa', new Krakatoa(this, options));
+			}
+		});
+	};
+
+})(jQuery, window, document);

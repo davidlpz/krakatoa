@@ -31,9 +31,9 @@ Options are set with an object as second argument to the .krakatoa() method.
 * **items**: Numbers of items to show at the same time. Integer. Default value is 1.
 * **gutter**: Margin between items. Integer. Default value is 10.
 * **first**: Default item to show. Integer. Default value is 0 and shows the first item.
-* **loop**: Begins again after last item. Boolean. Default value is true.
+* **loop**: Start again after last item. Boolean. Default value is true.
 * **autoplay**: Move automatically the slider (except when the mouse is over). Boolean. Default value is true.
-* **direction**: Movement of the slider. String. Default value is 'right'.
+* **direction**: Movement of the slider. Integer. 1 to go forward, -1 to go backwards.
 * **delay**: Delay of the next movement in milliseconds. Integer. Default value is 2500.
 * **duration**: Duration of the movement in milliseconds. Integer. Default value is 500.
 * **easing**: Animation easing type. String. Default value is 'swing'.

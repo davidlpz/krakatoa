@@ -1,0 +1,71 @@
+*{	
+	margin:0;
+	padding:0;
+	-moz-box-sizing:border-box;
+	-webkit-box-sizing:border-box;
+	box-sizing:border-box;
+}
+img{
+	border:none;
+}
+ul{
+	list-style-type:none;
+}
+.krakatoa{
+	display:none;
+	margin:50px auto;
+}
+.krakatoa-control{
+	padding-bottom:20px;
+}
+.arrows{
+	position:absolute;
+	top:1px;
+	left:0;
+	z-index:100;
+}
+.arrow{
+	float:left;
+	width:13px;
+	height:0;
+	margin-right:7px;
+	padding-top:16px;
+	overflow:hidden;
+	background:transparent url('img/arrows.png') no-repeat;
+}
+.arrow-left{
+	background-position:0 0;
+}
+.arrow-left:hover{
+	background-position:0 -16px;
+}
+.arrow-right{
+	background-position:-20px 0;
+	left:20px;
+}
+.arrow-right:hover{
+	background-position:-20px -16px;
+}
+.buttons{
+	position:absolute;
+	top:5px;
+	right:0px;
+	z-index:100;
+}
+.pagination{
+	float:left;
+	margin:0 2px;
+}
+.pagination a{
+	display:block;
+	width:10px;
+	height:0;
+	padding-top:10px;
+	background-image:url('img/pagination.png');
+	background-position:0 0;
+	overflow:hidden;
+}
+.pagination a:hover,
+.active-button a{
+	background-position:0 -30px;
+}
