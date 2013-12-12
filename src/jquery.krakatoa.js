@@ -171,7 +171,7 @@
 				return;
 			}
 		} else if (settings.buttons) { // button
-			if (self.hasClass('active-button')) return;
+			if (self.parent().hasClass('active-button')) return;
 			move = (self.parent().index() * settings.items > current) ? 1 : -1;
 			next = self.parent().index() * settings.items;
 		}
