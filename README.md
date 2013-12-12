@@ -36,6 +36,7 @@ Options are set with an object as second argument to the .krakatoa() method.
 * **direction**: Movement of the slider. String. Default value is 'right'.
 * **delay**: Delay of the next movement in milliseconds. Integer. Default value is 2500.
 * **duration**: Duration of the movement in milliseconds. Integer. Default value is 500.
+* **easing**: Animation easing type. String. Default value is 'swing'.
 
 More than one slider can co-exists in the same page. If different options are needed for each one, add a data- attribute to the container element.
 
