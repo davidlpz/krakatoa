@@ -20,7 +20,8 @@
 		direction: 1,
 		delay: 2500,
 		duration: 500,
-		easing: 'swing'
+		easing: 'swing',
+		callback: undefined
 	};
 
 	// Plugin constructor
@@ -40,7 +41,7 @@
 				settings = self.settings,
 				length = slider.children().length,
 				i, item, item_w, width, height,
-				container, arrows, buttons,
+				container, arrows, buttons, fn,
 				max_h = 0;
 
 			// Add the slider structure
@@ -120,6 +121,12 @@
 					slider.find('.buttons a').on('click touchstart', { krakatoa: self }, click_handler);
 					slider.find('.buttons').find('li').eq(settings.first).addClass('active-button');
 				}
+			}
+
+			// Callback funcion
+			fn = window[settings.callback];
+			if(typeof fn === 'function') {
+			    fn();
 			}
 
 			// Animate the slider
