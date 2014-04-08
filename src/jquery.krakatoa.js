@@ -125,11 +125,11 @@
 			}
 
 			// Callback function
-			if(typeof settings.callback === 'string' && typeof window[settings.callback] === 'function') {
+			if (typeof settings.callback === 'string' && typeof window[settings.callback] === 'function') {
 				// callback given as function name
 			    fn = window[settings.callback];
 			    fn(self); // passing reference to self object
-			} else if(typeof settings.callback === 'function') {
+			} else if (typeof settings.callback === 'function') {
 				// callback given as reference
 				fn = settings.callback; 
 			    fn(self); // passing reference to self object
@@ -229,6 +229,8 @@
 			var self = this;
 
 			self.settings.callback = undefined; // To prevent callback loops
+			self.playing = false; // clear the current animation
+			clearTimeout(self.frameId);
 			self.slider.html(self.html); // restore original HTML code
 			self.init(); // re-run init function
 		}
