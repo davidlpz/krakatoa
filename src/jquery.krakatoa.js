@@ -30,6 +30,7 @@
 		this.frameId = 0;
 		this.playing = false;
 		this.slider = $(element);
+		this.html = this.slider.html();
 		this.settings = $.extend( {}, defaults, options, stringToObj(this.slider.data('settings')));
 		this.init();
 	}
@@ -123,10 +124,15 @@
 				}
 			}
 
-			// Callback funcion
-			fn = window[settings.callback];
-			if(typeof fn === 'function') {
-			    fn();
+			// Callback function
+			if(typeof settings.callback === 'string' && typeof window[settings.callback] === 'function') {
+				// callback given as function name
+			    fn = window[settings.callback];
+			    fn(self); // passing reference to self object
+			} else if(typeof settings.callback === 'function') {
+				// callback given as reference
+				fn = settings.callback; 
+			    fn(self); // passing reference to self object
 			}
 
 			// Animate the slider
@@ -217,7 +223,16 @@
 				slider.find('.active-button').removeClass('active-button')
 					  .parent().children().eq(current).addClass('active-button');
 			}
+		},
+
+		reload: function() {
+			var self = this;
+
+			self.settings.callback = undefined; // To prevent callback loops
+			self.slider.html(self.html); // restore original HTML code
+			self.init(); // re-run init function
 		}
+
 	};
 
 	// Click/touch event handler
